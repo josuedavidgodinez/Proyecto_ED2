@@ -5,6 +5,15 @@ public class Conversacion {
     private mensaje mensajes[];
     private String usuario1;
     private  String usuario2;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public mensaje[] getMensajes() {
         return mensajes;

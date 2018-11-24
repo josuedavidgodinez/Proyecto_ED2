@@ -1,19 +1,20 @@
 package com.example.godin.proyecto_ed2;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -21,99 +22,143 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class usuarios extends AppCompatActivity {
     String usuariologeado;
     ListView usuarios;
     RequestQueue queue;
     String token;
-    ArrayList<String> usuariosdisponibles;
+    List<String> usuariosdisponibles=new ArrayList<String>();
+    ArrayAdapter<String> adaptador;
+   static String elegido;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         usuariologeado=getIntent().getExtras().getString("usuario");
+        token=getIntent().getExtras().getString("token");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuarios);
         usuarios =(ListView) findViewById(R.id.usuariosenpantalla);
 
         queue= Volley.newRequestQueue(this);
-        obtenerdatos();
+        usuariosdisponibles=new ArrayList<>();
 
-
-        ArrayAdapter<String> adaptador=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, usuariosdisponibles);
-
+        adaptador=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1 );
         usuarios.setAdapter(adaptador);
+         obtenerdatos();
+
+
+
+
 
         usuarios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String elegido;
-                elegido=usuariosdisponibles.get(i);
 
-              //crearconversacion(elegido);
-                Intent intento =new Intent(usuarios.this,chat.class);
-                intento.putExtra("usuario",usuariologeado);
-                intento.putExtra("usuarioelegido",elegido);
-                startActivity(intento);
+                elegido=usuarios.getItemAtPosition(i).toString();
+
+                try {
+                    crearconversacion();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
 
     }
-    public void crearconversacion(String elegido){
 
-        String petciones=Login.url+"/users";
+    public void iniciarconversacion(){
+
+        Intent intento =new Intent(usuarios.this,chat.class);
+        intento.putExtra("usuario", usuariologeado);
+        intento.putExtra("usuarioelegido", elegido);
+        intento.putExtra("token", token);
+        startActivity(intento);
+    }
+
+
+    public void crearconversacion( ) throws JSONException {
+
+        String petciones=Login.url+"/chat";
+        JSONArray array=new JSONArray();
+
         JSONObject jsonBody = new JSONObject();
+         jsonBody.put("user1",usuariologeado);
+        jsonBody.put("user2",elegido);
+        jsonBody.put("messages",array);
 
 
-
-
-        JsonArrayRequest request=new JsonArrayRequest(Request.Method.GET, petciones, null, new Response.Listener<JSONArray>() {
+        queue.add(new JsonObjectRequest(Request.Method.POST, petciones, jsonBody, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
-                try {
+            public void onResponse(JSONObject response) {
 
-                    for (int i=0;i<response.length();i++){
 
-                        JSONObject conversacio=response.getJSONObject(i);
-                        String user=conversacio.getString("user");
+                iniciarconversacion();
 
-                        usuariosdisponibles.add(user);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
-        });
-        queue.add(request);
+        }){
+
+            //This is for Headers If You Needed
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", token);
+                return params;
+            }
+
+            //Pass Your Parameters here
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("user", usuariologeado);
+
+                return params;
+            } });
 
     }
 
 
-    public class peticiones{
 
-        
-    }
     public void obtenerdatos(){
-         usuariosdisponibles=new ArrayList<>();
         String url=Login.url+"/users";
-        JsonArrayRequest request=new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        queue.add(new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 try {
 
-                    for (int i=0;i<response.length();i++){
+                    if (response.has("auth")){
 
-                        JSONObject conversacio=response.getJSONObject(i);
-                        String user=conversacio.getString("user");
-                        Toast.makeText(usuarios.this,user,Toast.LENGTH_SHORT);
-                       usuariosdisponibles.add(user);
+
+                    }else{
+                        JSONArray array=response.getJSONArray("users");
+                        ArrayList<String> lisa=new ArrayList<>();
+                        for (int i=0;i<array.length();i++){
+
+                            JSONObject conversacio=array.getJSONObject(i);
+                            String user=conversacio.getString("user");
+                            Toast.makeText(usuarios.this,user,Toast.LENGTH_SHORT);
+                           if(user!=usuariologeado){
+                               lisa.add(user);
+                           }
+
+
+                        }
+                        adaptador.clear();
+                        adaptador.addAll(lisa);
+                        adaptador.notifyDataSetChanged();
+
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -123,8 +168,26 @@ public class usuarios extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        });
-        queue.add(request);
+        }){
+
+            //This is for Headers If You Needed
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", token);
+                return params;
+            }
+
+            //Pass Your Parameters here
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("token", token);
+
+                return params;
+            } }
+        ) ;
 
     }
 

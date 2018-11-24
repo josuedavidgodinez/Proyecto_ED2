@@ -12,11 +12,10 @@ import java.util.ArrayList;
 
 public class Adaptadorchat extends ArrayAdapter<mensaje> {
 
-
     private Context contexto;
     private int recurso;
 
-    public Adaptadorchat( Context context, int resource, ArrayList<mensaje> objects) {
+    public Adaptadorchat(Context context, int resource, ArrayList<mensaje> objects) {
         super(context, resource, objects);
         contexto=context;
         recurso=resource;
@@ -32,7 +31,7 @@ public class Adaptadorchat extends ArrayAdapter<mensaje> {
 
             emisor=getItem(position).emisor;
 
-            if(getItem(position).archivo){
+            if(getItem(position).extensionarchivo!=""){
 
                 mensaje=path.substring(path.lastIndexOf('/')+1,path.length()-1);
             }else
