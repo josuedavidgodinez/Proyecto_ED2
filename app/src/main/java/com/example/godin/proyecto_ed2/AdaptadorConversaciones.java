@@ -27,7 +27,7 @@ public class AdaptadorConversaciones extends ArrayAdapter<Conversacion> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         String nombre="";
-
+        String ultimomensaje="";
         if (usuariologeado.equals(getItem(position).getUsuario1())){
 
             nombre=getItem(position).getUsuario2();
@@ -36,7 +36,14 @@ public class AdaptadorConversaciones extends ArrayAdapter<Conversacion> {
 
         }
 
-        String ultimomensaje = getItem(position).getMensajes()[getItem(position).getMensajes().length-1].mensaje;
+
+        if(getItem(position).getMensajes().length!=0){
+         ultimomensaje = getItem(position).getMensajes()[getItem(position).getMensajes().length-1].mensaje;
+        }else {
+
+            ultimomensaje="";
+        }
+
 
 
         LayoutInflater inflater = LayoutInflater.from(contexto);

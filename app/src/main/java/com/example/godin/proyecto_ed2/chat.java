@@ -39,12 +39,13 @@ public class chat extends AppCompatActivity {
  int clavecifrado;
     EditText messagetext;
    private  String id;
- private ArrayList<mensaje> messages;
+  ArrayList<mensaje> messages;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        queue= Volley.newRequestQueue(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Button act=(Button) findViewById(R.id.button3);
@@ -54,7 +55,7 @@ public class chat extends AppCompatActivity {
         usuariologeado=getIntent().getExtras().getString("usuario");
         elegido=getIntent().getExtras().getString("usuarioelegido");
         token=getIntent().getExtras().getString("token");
-        queue= Volley.newRequestQueue(this);
+
 
         mensjesmostrados =(ListView) findViewById(R.id.mensajesenpantalla);
 

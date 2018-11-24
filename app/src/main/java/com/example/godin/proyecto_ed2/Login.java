@@ -37,7 +37,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
  * A login screen that offers login via email/password.
  */
 public class Login extends AppCompatActivity {
-   public static String url="http://192.168.1.31:3000";
+   public static String url="http://192.168.1.6:3000";
     /**
      * Id to identity READ_CONTACTS permission request.
      */

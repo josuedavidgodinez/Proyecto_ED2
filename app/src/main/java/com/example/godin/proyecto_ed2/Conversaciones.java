@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class Conversaciones extends AppCompatActivity {
   String usuariologeado;
-  ListView conversaciones;
+  ListView chatstoshow;
     RequestQueue queue;
     String token;
     ArrayList<Conversacion> conversacionesmostradas;
@@ -39,33 +39,37 @@ public class Conversaciones extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-         usuariologeado=getIntent().getExtras().getString("usuario");
-        token=getIntent().getExtras().getString("token");
+        queue= Volley.newRequestQueue(Conversaciones.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversaciones);
+        usuariologeado=getIntent().getExtras().getString("usuario");
+        token=getIntent().getExtras().getString("token");
         showusers=(Button)findViewById(R.id.newchat) ;
-        conversaciones =(ListView) findViewById(R.id.conversaciones);
-        conversacionesmostradas =new ArrayList<>();
+        chatstoshow =(ListView) findViewById(R.id.conversaciones);
+        conversacionesmostradas=new ArrayList<>();
+
 
         showusers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intento =new Intent(Conversaciones.this,usuarios.class);
+              /*  Intent intento =new Intent(Conversaciones.this,usuarios.class);
                 intento.putExtra("usuario",usuariologeado);
                 intento.putExtra("token",token);
 
-                startActivity(intento);
+                startActivity(intento);*/
+
+                final   AdaptadorConversaciones adaptador=new AdaptadorConversaciones(Conversaciones.this,R.layout.activity_adaptador_conversaciones, conversacionesmostradas);
+                adaptador.usuariologeado=usuariologeado;
+                chatstoshow.setAdapter(adaptador);
+
+
+
             }
         });
-        queue= Volley.newRequestQueue(this);
-        obtenerdatos();
 
 
-        AdaptadorConversaciones adaptador=new AdaptadorConversaciones(this,R.layout.activity_adaptador_conversaciones, conversacionesmostradas);
-        adaptador.usuariologeado=usuariologeado;
-        conversaciones.setAdapter(adaptador);
 
-        conversaciones.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        chatstoshow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String elegido;
@@ -85,6 +89,18 @@ public class Conversaciones extends AppCompatActivity {
 
 
     }
+    public void onResume(){
+
+        super.onResume();
+
+
+        obtenerdatos(new VolleyCallback<ArrayList<Conversacion>>() {
+            @Override
+            public void onSuccess(ArrayList<Conversacion> result) {
+                conversacionesmostradas = result;
+            }
+        });
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
@@ -96,15 +112,15 @@ public class Conversaciones extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void obtenerdatos(){
+    public void obtenerdatos(final VolleyCallback<ArrayList<Conversacion>> callback){
 
         String peticion=Login.url+"/chat";
-        final JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, peticion, null, new Response.Listener<JSONObject>() {
+       queue.add(new JsonObjectRequest(Request.Method.GET, peticion, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
 
-
+                 ArrayList<Conversacion> conversacions=new ArrayList<>();
                     JSONArray array=response.getJSONArray("chats");
                     for (int i=0;i<array.length();i++){
 
@@ -129,10 +145,11 @@ public class Conversaciones extends AppCompatActivity {
                         conv.setUsuario1(usuario1);
                             conv.setUsuario2(usuario2);
                             conv.setMensajes(mensajesparainsertar);
-                        conversacionesmostradas.add(conv);
+                        conversacions.add(conv);
 
                         }
-                    }
+
+                    }callback.onSuccess(conversacions);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -149,7 +166,7 @@ public class Conversaciones extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("token", token);
+                params.put("Authorization", token);
                 return params;
             }
 
@@ -160,8 +177,8 @@ public class Conversaciones extends AppCompatActivity {
                 params.put("user", usuariologeado);
 
                 return params;
-            } };
-        queue.add(request);
+            } });
+
 
     }
 }
