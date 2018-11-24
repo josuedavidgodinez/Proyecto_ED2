@@ -115,8 +115,11 @@ public class chat extends AppCompatActivity {
             public void onClick(View view) {
                 try {
 
+                    uploadatach();
                     sendmessage();
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -426,6 +429,8 @@ public class chat extends AppCompatActivity {
         }
         return mensajes;
     }
+
+
 
     public   JSONArray  arraytojsonarray(ArrayList<mensaje> lisa ) throws JSONException {
 
