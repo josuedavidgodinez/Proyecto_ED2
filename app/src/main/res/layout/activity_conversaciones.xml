@@ -4,7 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2a457b"
     tools:context=".Conversaciones">
+
+    <LinearLayout
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="194dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginRight="194dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="300dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/newchat"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:background="@android:drawable/ic_menu_add"
+            tools:layout_editor_absoluteX="147dp"
+            tools:layout_editor_absoluteY="352dp" />
+
+        <Button
+            android:id="@+id/actualizar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:drawable/stat_notify_sync"
+            tools:layout_editor_absoluteX="150dp"
+            tools:layout_editor_absoluteY="470dp" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@android:drawable/ic_lock_power_off"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="425dp" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/conversaciones"
@@ -16,56 +56,9 @@
         android:layout_marginRight="21dp"
         android:layout_marginStart="21dp"
         android:layout_marginTop="33dp"
-        app:layout_constraintBottom_toTopOf="@+id/newchat"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/newchat"
-        android:layout_width="341dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="46dp"
-        android:text="new chat"
-        app:layout_constraintBottom_toTopOf="@+id/logout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversaciones" />
-
-    <Button
-        android:id="@+id/actualizar"
-        android:layout_width="112dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="33dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginRight="136dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginTop="28dp"
-        android:text="actualizar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logout" />
-
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="346dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
-        android:layout_marginEnd="19dp"
-        android:layout_marginLeft="19dp"
-        android:layout_marginRight="19dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="18dp"
-        android:text="Logout"
-        app:layout_constraintBottom_toTopOf="@+id/actualizar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newchat" />
 </android.support.constraint.ConstraintLayout>

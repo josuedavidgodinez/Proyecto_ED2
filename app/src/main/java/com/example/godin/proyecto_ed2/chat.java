@@ -3,6 +3,8 @@ package com.example.godin.proyecto_ed2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +30,7 @@ import java.util.Map;
 
 import lzw.LZW;
 
-public class chat extends AppCompatActivity {
+public class chat extends AppCompatActivity implements TextWatcher{
     String token;
     public String elegido;
     public String usuariologeado;
@@ -41,9 +43,9 @@ public class chat extends AppCompatActivity {
     EditText messagetext;
    private  String id;
   ArrayList<mensaje> messages;
+EditText search;
 
-
-
+    Adaptadorchat adaptador;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         queue= Volley.newRequestQueue(this);
@@ -53,20 +55,24 @@ public class chat extends AppCompatActivity {
         Button env=(Button) findViewById(R.id.send);
         Button atach =(Button) findViewById(R.id.atach);
          messagetext =(EditText) findViewById(R.id.message);
+        search=(EditText)findViewById(R.id.editText);
         usuariologeado=getIntent().getExtras().getString("usuario");
         elegido=getIntent().getExtras().getString("usuarioelegido");
         token=getIntent().getExtras().getString("token");
 
-
+         search.addTextChangedListener(this);
         mensjesmostrados =(ListView) findViewById(R.id.mensajesenpantalla);
-
         messages=new ArrayList<>();
+
+         adaptador =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
+
+        mensjesmostrados.setAdapter(adaptador);
         act.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
               onResume();
 
-                final  Adaptadorchat adaptador =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
+              adaptador   =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
 
                 mensjesmostrados.setAdapter(adaptador);
 
@@ -432,4 +438,18 @@ public class chat extends AppCompatActivity {
     }
 
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        this.adaptador.getFilter().filter(s);
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
 }
