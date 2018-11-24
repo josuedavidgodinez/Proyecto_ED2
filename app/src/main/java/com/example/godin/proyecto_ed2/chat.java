@@ -150,6 +150,7 @@ public class chat extends AppCompatActivity {
             Uri selectedImage = data.getData();
 
              filePath = null;
+            file_extn = null;
             try {
                 filePath = readTextFromUri(selectedImage);
             } catch (IOException e) {
@@ -190,9 +191,9 @@ public class chat extends AppCompatActivity {
 
         JSONObject mensajeagregado=new JSONObject();
         mensajeagregado.put("mensaje",z.codezigzag(messagetext.getText().toString(),2));
-        mensajeagregado.put("path","");
+        mensajeagregado.put("path",filePath);
         mensajeagregado.put("emisor",usuariologeado);
-        mensajeagregado.put("extensionarchivo","");
+        mensajeagregado.put("extensionarchivo", file_extn);
         JSONArray mensaje=arraytojsonarray(messages);
 
         mensaje.put(mensajeagregado);
