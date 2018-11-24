@@ -33,7 +33,7 @@ public class Conversaciones extends AppCompatActivity {
     String token;
     ArrayList<Conversacion> conversacionesmostradas;
     Button showusers;
-
+    Button actualizacion;
 
 
     @Override
@@ -44,23 +44,30 @@ public class Conversaciones extends AppCompatActivity {
         setContentView(R.layout.activity_conversaciones);
         usuariologeado=getIntent().getExtras().getString("usuario");
         token=getIntent().getExtras().getString("token");
+        actualizacion=(Button)findViewById(R.id.actualizar);
         showusers=(Button)findViewById(R.id.newchat) ;
         chatstoshow =(ListView) findViewById(R.id.conversaciones);
         conversacionesmostradas=new ArrayList<>();
 
+        actualizacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final   AdaptadorConversaciones adaptador=new AdaptadorConversaciones(Conversaciones.this,R.layout.activity_adaptador_conversaciones, conversacionesmostradas);
+                adaptador.usuariologeado=usuariologeado;
+                chatstoshow.setAdapter(adaptador);
+            }
+        });
 
         showusers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  Intent intento =new Intent(Conversaciones.this,usuarios.class);
+               Intent intento =new Intent(Conversaciones.this,usuarios.class);
                 intento.putExtra("usuario",usuariologeado);
                 intento.putExtra("token",token);
 
-                startActivity(intento);*/
+                startActivity(intento);
 
-                final   AdaptadorConversaciones adaptador=new AdaptadorConversaciones(Conversaciones.this,R.layout.activity_adaptador_conversaciones, conversacionesmostradas);
-                adaptador.usuariologeado=usuariologeado;
-                chatstoshow.setAdapter(adaptador);
+
 
 
 
@@ -133,7 +140,7 @@ public class Conversaciones extends AppCompatActivity {
                            JSONObject mensajedeljson=mensajes.getJSONObject(i);
                            mensaje mensajeparainsertar=new mensaje();
                                   mensajeparainsertar.emisor= mensajedeljson.getString("emisor");
-                           mensajeparainsertar.mensaje= mensajedeljson.getString("message");
+                           mensajeparainsertar.mensaje= mensajedeljson.getString("mensaje");
                            mensajeparainsertar.path= mensajedeljson.getString("path");
                            mensajeparainsertar.extensionarchivo= mensajedeljson.getString("extensionarchivo");
 

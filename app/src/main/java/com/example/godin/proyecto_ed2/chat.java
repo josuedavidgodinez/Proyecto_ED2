@@ -59,18 +59,20 @@ public class chat extends AppCompatActivity {
 
         mensjesmostrados =(ListView) findViewById(R.id.mensajesenpantalla);
 
+        messages=new ArrayList<>();
         act.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
                 final  Adaptadorchat adaptador =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
+
                 mensjesmostrados.setAdapter(adaptador);
 
 
             }
         });
-
+        id="";
         env.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,6 +84,8 @@ public class chat extends AppCompatActivity {
                 }
             }
         });
+
+
 
         atach.setOnClickListener(new View.OnClickListener() {
             @Override

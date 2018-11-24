@@ -8,30 +8,47 @@
 
     <ListView
         android:id="@+id/conversaciones"
-        android:layout_width="match_parent"
-        android:layout_height="395dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="342dp"
+        android:layout_height="340dp"
+        android:layout_marginBottom="19dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginStart="21dp"
+        app:layout_constraintBottom_toTopOf="@+id/actualizar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/newchat"
         android:layout_width="341dp"
-        android:layout_height="79dp"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginLeft="26dp"
-        android:layout_marginRight="17dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="49dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="47dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="19dp"
         android:text="new chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversaciones"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/actualizar" />
+
+    <Button
+        android:id="@+id/actualizar"
+        android:layout_width="348dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="29dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="19dp"
+        android:text="actualizar"
+        app:layout_constraintBottom_toTopOf="@+id/newchat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conversaciones" />
 </android.support.constraint.ConstraintLayout>
