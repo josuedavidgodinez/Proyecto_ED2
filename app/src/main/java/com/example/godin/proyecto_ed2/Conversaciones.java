@@ -52,7 +52,7 @@ public class Conversaciones extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intento =new Intent(Conversaciones.this,usuarios.class);
                 intento.putExtra("usuario",usuariologeado);
-                intento.putExtra("token",token);
+                intento.putExtra("Authorization",token);
 
                 startActivity(intento);
             }
@@ -149,7 +149,7 @@ public class Conversaciones extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("token", token);
+                params.put("Authorization", token);
                 return params;
             }
 
