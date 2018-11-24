@@ -138,7 +138,9 @@ public class usuarios extends AppCompatActivity {
 
                     if (response.has("auth")){
 
+                        Intent intento =new Intent(usuarios.this,Login.class);
 
+                        startActivity(intento);
                     }else{
                         JSONArray array=response.getJSONArray("users");
                         ArrayList<String> lisa=new ArrayList<>();
@@ -147,7 +149,7 @@ public class usuarios extends AppCompatActivity {
                             JSONObject conversacio=array.getJSONObject(i);
                             String user=conversacio.getString("user");
                             Toast.makeText(usuarios.this,user,Toast.LENGTH_SHORT);
-                           if(user!=usuariologeado){
+                           if(!user.equals(usuariologeado)){
                                lisa.add(user);
                            }
 

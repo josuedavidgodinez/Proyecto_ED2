@@ -36,7 +36,7 @@ public class Conversaciones extends AppCompatActivity {
     Button showusers;
     Button actualizacion;
   Button mlogout;
-
+     Button meliminar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -50,7 +50,36 @@ public class Conversaciones extends AppCompatActivity {
         showusers=(Button)findViewById(R.id.newchat) ;
         chatstoshow =(ListView) findViewById(R.id.conversaciones);
         conversacionesmostradas=new ArrayList<>();
+         meliminar=(Button)findViewById(R.id.eliminar) ;
 
+         meliminar.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 String peticion=Login.url+"/users/"+usuariologeado;
+
+
+
+
+                 JsonObjectRequest request=new JsonObjectRequest(Request.Method.DELETE, peticion, null, new Response.Listener<JSONObject>() {
+                     @Override
+                     public void onResponse(JSONObject response) {
+
+                     }
+                 }, new Response.ErrorListener() {
+                     @Override
+                     public void onErrorResponse(VolleyError error) {
+                         Intent intento =new Intent(Conversaciones.this,Login.class);
+
+                         startActivity(intento);
+                     }
+                 });
+
+                 //This is for Headers If You Needed
+
+
+                 queue.add(request);
+             }
+         });
         mlogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,7 +201,9 @@ public class Conversaciones extends AppCompatActivity {
                 try {
 
                     if (response.has("auth")){
+                        Intent intento =new Intent(Conversaciones.this,Login.class);
 
+                        startActivity(intento);
                     }else{ArrayList<Conversacion> conversacions=new ArrayList<>();
                         JSONArray array=response.getJSONArray("chats");
                         zigzag z =new zigzag();
