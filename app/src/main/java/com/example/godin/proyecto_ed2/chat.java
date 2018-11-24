@@ -1,5 +1,6 @@
 package com.example.godin.proyecto_ed2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -63,7 +64,7 @@ public class chat extends AppCompatActivity {
         act.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+              onResume();
 
                 final  Adaptadorchat adaptador =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
 
@@ -79,6 +80,10 @@ public class chat extends AppCompatActivity {
                 try {
 
                     sendmessage();
+                    onResume();
+                    final  Adaptadorchat adaptador =new Adaptadorchat(chat.this,R.layout.activity_adaptador_mensajes,messages );
+
+                    mensjesmostrados.setAdapter(adaptador);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -122,7 +127,7 @@ public class chat extends AppCompatActivity {
 
     }
     public void sendmessage() throws JSONException {
-
+      onResume();
         clavecifrado=usuariologeado.length()+elegido.length();
 
         String url=Login.url+"/chat/"+id;
@@ -143,8 +148,15 @@ public class chat extends AppCompatActivity {
         queue.add(new JsonObjectRequest(Request.Method.PUT, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                    if(response.has("auth")){
+                        Intent intento =new Intent(chat.this,Login.class);
 
-             Toast.makeText(chat.this,"Su mensaje fue enviado con exito",Toast.LENGTH_SHORT ).show();
+                        startActivity(intento);
+
+                    }else{
+                        Toast.makeText(chat.this,"Su mensaje fue enviado con exito",Toast.LENGTH_SHORT ).show();
+                    }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -181,31 +193,39 @@ public class chat extends AppCompatActivity {
                @Override
                public void onResponse(JSONObject response) {
                    try {
-                       ArrayList<mensaje> lisa=new ArrayList<>();
-                       JSONObject conversacion;
-                       JSONArray array =response.getJSONArray("chats");
 
-                       for (int i=0;i<array.length();i++){
+                       if (response.has("auth")){
+                           Intent intento =new Intent(chat.this,Login.class);
 
-                           conversacion=array.getJSONObject(i);
-                           if(conversacion.getString("user1").equals(usuariologeado)){
-                               if(conversacion.getString("user2").equals(elegido)){
+                           startActivity(intento);
+                       }else {
+                           ArrayList<mensaje> lisa=new ArrayList<>();
+                           JSONObject conversacion;
+                           JSONArray array =response.getJSONArray("chats");
 
-                                   lisa=JSONARRAYTOARRAY(conversacion.getJSONArray("messages"));
-                                   callback.onSuccess(lisa);
+                           for (int i=0;i<array.length();i++){
+
+                               conversacion=array.getJSONObject(i);
+                               if(conversacion.getString("user1").equals(usuariologeado)){
+                                   if(conversacion.getString("user2").equals(elegido)){
+
+                                       lisa=JSONARRAYTOARRAY(conversacion.getJSONArray("messages"));
+                                       callback.onSuccess(lisa);
+                                   }
+
+                               }else if(conversacion.getString("user2").equals(usuariologeado)){
+                                   if(conversacion.getString("user1").equals(elegido)){
+
+                                       lisa=JSONARRAYTOARRAY(conversacion.getJSONArray("messages"));
+                                       callback.onSuccess(lisa);
+                                   }
+
                                }
 
-                           }else if(conversacion.getString("user2").equals(usuariologeado)){
-                               if(conversacion.getString("user1").equals(elegido)){
-
-                                   lisa=JSONARRAYTOARRAY(conversacion.getJSONArray("messages"));
-                                   callback.onSuccess(lisa);
-                               }
 
                            }
-
-
                        }
+
                    } catch (JSONException e) {
                        e.printStackTrace();
                    }
@@ -398,13 +418,13 @@ public class chat extends AppCompatActivity {
 
         JSONArray mensajes=new JSONArray();
         for(int x=0;x<lisa.size();x++){
-            JSONObject jsonbod=mensajes.getJSONObject(x);
+            JSONObject jsonbod=new JSONObject();
            mensaje message=lisa.get(x);
-            mensaje mensajeparainsertar=new mensaje();
-            jsonbod.put("emisor",mensajeparainsertar.emisor);
-            jsonbod.put("mensaje",mensajeparainsertar.mensaje);
-            jsonbod.put("extensionarchivo",mensajeparainsertar.extensionarchivo);
-            jsonbod.put("path",mensajeparainsertar.path);
+
+            jsonbod.put("emisor",message.emisor);
+            jsonbod.put("mensaje",z.codezigzag(message.mensaje,2));
+            jsonbod.put("extensionarchivo",message.extensionarchivo);
+            jsonbod.put("path",message.path);
 
             mensajes.put(jsonbod);
         }

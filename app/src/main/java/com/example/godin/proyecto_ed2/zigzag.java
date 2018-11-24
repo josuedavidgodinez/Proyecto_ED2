@@ -34,11 +34,11 @@ public class zigzag {
 
         if (miss_characters != 0) {
             for (int i = 0; i < miss_characters; i++) {
-                text += "☻";
+                text += " ";
             }
         }
 
-        Character[] charcatersarray =   ArrayUtils.toObject(text.toCharArray());
+        Character[] charcatersarray = ArrayUtils.toObject(text.toCharArray());
         ArrayList<Character> characters = new ArrayList<>(Arrays.asList(charcatersarray));
 
         int number_waves = text.length() / size_waves;
@@ -67,7 +67,7 @@ public class zigzag {
     }
 
     public String decodezigzag(String encodetext, int level) {
-        encodetext=encodetext.substring(1, encodetext.length()-1);
+
         int size_waves = level * 2 - 2;
         int number_waves = encodetext.length() / size_waves;
         int leftover_characters = (encodetext.length() % size_waves);
@@ -117,8 +117,8 @@ public class zigzag {
             iterations++;
 
         }
+
         return out;
     }
 
 }
-

@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.view.*;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -34,7 +35,7 @@ public class Conversaciones extends AppCompatActivity {
     ArrayList<Conversacion> conversacionesmostradas;
     Button showusers;
     Button actualizacion;
-
+  Button mlogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +45,50 @@ public class Conversaciones extends AppCompatActivity {
         setContentView(R.layout.activity_conversaciones);
         usuariologeado=getIntent().getExtras().getString("usuario");
         token=getIntent().getExtras().getString("token");
+        mlogout=(Button)findViewById(R.id.logout) ;
         actualizacion=(Button)findViewById(R.id.actualizar);
         showusers=(Button)findViewById(R.id.newchat) ;
         chatstoshow =(ListView) findViewById(R.id.conversaciones);
         conversacionesmostradas=new ArrayList<>();
+
+        mlogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String peticion=Login.url+"/auth/logout";
+                JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, peticion, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean auth=response.getBoolean("auth");
+                            if(!auth){
+                                token=response.getString("token");
+                                Intent intento =new Intent(Conversaciones.this,Login.class);
+
+                                startActivity(intento);
+                            }else{
+                                Toast.makeText(Conversaciones.this,"was a problem for logout",Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Conversaciones.this,"was a problem for logout",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                //This is for Headers If You Needed
+
+
+                queue.add(request);
+            }
+        });
 
         actualizacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,10 +131,13 @@ public class Conversaciones extends AppCompatActivity {
                 Intent intento =new Intent(Conversaciones.this,chat.class);
                 intento.putExtra("usuario",usuariologeado);
                 intento.putExtra("usuarioelegido",elegido);
+                intento.putExtra("token",token);
                 startActivity(intento);
             }
         });
-
+        final   AdaptadorConversaciones adaptador=new AdaptadorConversaciones(Conversaciones.this,R.layout.activity_adaptador_conversaciones, conversacionesmostradas);
+        adaptador.usuariologeado=usuariologeado;
+        chatstoshow.setAdapter(adaptador);
 
     }
     public void onResume(){
@@ -127,36 +171,42 @@ public class Conversaciones extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
 
-                 ArrayList<Conversacion> conversacions=new ArrayList<>();
-                    JSONArray array=response.getJSONArray("chats");
-                    for (int i=0;i<array.length();i++){
+                    if (response.has("auth")){
 
-                        JSONObject conversacio=array.getJSONObject(i);
-                        String usuario1=conversacio.getString("user1");
-                        String usuario2=conversacio.getString("user2");
-                        JSONArray mensajes=conversacio.getJSONArray("messages");
-                        mensaje mensajesparainsertar[]=new mensaje[mensajes.length()];
-                       for(int x=0;x<mensajes.length();x++){
-                           JSONObject mensajedeljson=mensajes.getJSONObject(i);
-                           mensaje mensajeparainsertar=new mensaje();
-                                  mensajeparainsertar.emisor= mensajedeljson.getString("emisor");
-                           mensajeparainsertar.mensaje= mensajedeljson.getString("mensaje");
-                           mensajeparainsertar.path= mensajedeljson.getString("path");
-                           mensajeparainsertar.extensionarchivo= mensajedeljson.getString("extensionarchivo");
+                    }else{ArrayList<Conversacion> conversacions=new ArrayList<>();
+                        JSONArray array=response.getJSONArray("chats");
+                        zigzag z =new zigzag();
+                        for (int i=0;i<array.length();i++){
 
-                           mensajesparainsertar[i]=mensajeparainsertar;
+                            JSONObject conversacio=array.getJSONObject(i);
+                            String usuario1=conversacio.getString("user1");
+                            String usuario2=conversacio.getString("user2");
+                            JSONArray mensajes=conversacio.getJSONArray("messages");
+                            mensaje mensajesparainsertar[]=new mensaje[mensajes.length()];
+                            for(int x=0;x<mensajes.length();x++){
 
-                       }
-                        if(usuario1.equals(usuariologeado)||usuario2.equals(usuariologeado)){
-                        Conversacion conv=new Conversacion();
-                        conv.setUsuario1(usuario1);
-                            conv.setUsuario2(usuario2);
-                            conv.setMensajes(mensajesparainsertar);
-                        conversacions.add(conv);
+                                JSONObject mensajedeljson=mensajes.getJSONObject(x);
+                                mensaje mensajeparainsertar=new mensaje();
+                                mensajeparainsertar.emisor= mensajedeljson.getString("emisor");
+                                mensajeparainsertar.mensaje= z.decodezigzag(mensajedeljson.getString("mensaje"),2);
+                                mensajeparainsertar.path= mensajedeljson.getString("path");
+                                mensajeparainsertar.extensionarchivo= mensajedeljson.getString("extensionarchivo");
 
-                        }
+                                mensajesparainsertar[x]=mensajeparainsertar;
 
-                    }callback.onSuccess(conversacions);
+                            }
+                            if(usuario1.equals(usuariologeado)||usuario2.equals(usuariologeado)){
+                                Conversacion conv=new Conversacion();
+                                conv.setUsuario1(usuario1);
+                                conv.setUsuario2(usuario2);
+                                conv.setMensajes(mensajesparainsertar);
+                                conversacions.add(conv);
+
+                            }
+
+                        }callback.onSuccess(conversacions);}
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -39,7 +39,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
+                android:hint="User"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"/>
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
+                android:text="Log in"
                 android:textStyle="bold"/>
 
             <Button

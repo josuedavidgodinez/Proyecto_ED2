@@ -21,7 +21,9 @@ public class Adaptadorchat extends ArrayAdapter<mensaje> {
         recurso=resource;
     }
 
+
     @NonNull
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -31,7 +33,7 @@ public class Adaptadorchat extends ArrayAdapter<mensaje> {
 
             emisor=getItem(position).emisor;
 
-            if(getItem(position).extensionarchivo!=""){
+            if(getItem(position).extensionarchivo==""){
 
                 mensaje=path.substring(path.lastIndexOf('/')+1,path.length()-1);
             }else
