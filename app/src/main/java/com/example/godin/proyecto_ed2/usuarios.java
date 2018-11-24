@@ -76,7 +76,7 @@ public class usuarios extends AppCompatActivity {
         Intent intento =new Intent(usuarios.this,chat.class);
         intento.putExtra("usuario", usuariologeado);
         intento.putExtra("usuarioelegido", elegido);
-        intento.putExtra("token", token);
+        intento.putExtra("Authorization", token);
         startActivity(intento);
     }
 

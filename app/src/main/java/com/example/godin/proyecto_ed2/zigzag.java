@@ -8,7 +8,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.*;
+import org.apache.commons.lang3.*;
 /**
  *
  * @author godin
